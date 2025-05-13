@@ -1,14 +1,18 @@
 [tool.poetry]
 name = "vintasend-fastapi-mail"
-version = "0.1.2"
+version = "0.1.4"
 description = "FastAPI Mail adapter for VintaSend"
 authors = ["Hugo bessa <hugo@vinta.com.br>"]
 license = "MIT"
 readme = "README.md"
+packages = [{ include = "vintasend_fastapi_mail" }]
+include = [
+  { path = "vintasend_fastapi_mail/py.typed", format = "wheel" }
+]
 
 [tool.poetry.dependencies]
 python = "<3.14,>=3.10"
-vintasend = "0.1.2"
+vintasend = "0.1.4"
 fastapi-mail = "^1.4.2"
 
 
