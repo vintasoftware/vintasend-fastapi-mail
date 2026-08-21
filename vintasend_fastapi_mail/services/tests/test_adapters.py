@@ -1,18 +1,22 @@
-import uuid
-import pytest
 import base64
+import uuid
 from unittest import IsolatedAsyncioTestCase
 
+import pytest
 from fastapi_mail import ConnectionConfig
-
 from vintasend.constants import NotificationStatus, NotificationTypes
 from vintasend.exceptions import (
     NotificationTemplateRenderingError,
 )
 from vintasend.services.dataclasses import Notification
-from vintasend.services.notification_backends.stubs.fake_backend import FakeAsyncIOFileBackend, FakeFileBackend
-from vintasend_fastapi_mail.services.notification_adapters.fastapi_mail import FastAPIMailNotificationAdapter
+from vintasend.services.notification_backends.stubs.fake_backend import (
+    FakeAsyncIOFileBackend,
+    FakeFileBackend,
+)
 
+from vintasend_fastapi_mail.services.notification_adapters.fastapi_mail import (
+    FastAPIMailNotificationAdapter,
+)
 
 
 class FastAPIMailNotificationAdapterTestCase(IsolatedAsyncioTestCase):
@@ -33,7 +37,7 @@ class FastAPIMailNotificationAdapterTestCase(IsolatedAsyncioTestCase):
 
     def teardown_method(self, method) -> None:
         FakeFileBackend(database_file_name="fastapi-mail-adapter-test-notifications.json").clear()
-    
+
     def teardown_class(self) -> None:
         FakeFileBackend(database_file_name="fastapi-mail-adapter-test-notifications.json").clear()
 
@@ -60,7 +64,9 @@ class FastAPIMailNotificationAdapterTestCase(IsolatedAsyncioTestCase):
         notification = self.create_notification()
         context = self.create_notification_context()
 
-        backend = FakeAsyncIOFileBackend(database_file_name="fastapi-mail-adapter-test-notifications.json")
+        backend = FakeAsyncIOFileBackend(
+            database_file_name="fastapi-mail-adapter-test-notifications.json"
+        )
         backend.notifications.append(notification)
         await backend._store_notifications()
 
@@ -68,7 +74,7 @@ class FastAPIMailNotificationAdapterTestCase(IsolatedAsyncioTestCase):
             "vintasend.services.notification_template_renderers.stubs.fake_templated_email_renderer.FakeTemplateRenderer",
             "vintasend.services.notification_backends.stubs.fake_backend.FakeAsyncIOFileBackend",
             backend_kwargs={"database_file_name": "fastapi-mail-adapter-test-notifications.json"},
-            config=self.config
+            config=self.config,
         )
 
         with adapter.fm.record_messages() as outbox:
@@ -80,15 +86,21 @@ class FastAPIMailNotificationAdapterTestCase(IsolatedAsyncioTestCase):
         email_body = base64.b64decode(payload).decode("utf-8")
         assert email["Subject"] == notification.subject_template
         assert email_body == notification.body_template
-        assert email["To"] == "testemail@example.com"  # This is the email that the FakeFileBackend returns
-        assert email["From"] == "foo@example.com"  # This is the email that the FakeFileBackend returns
+        assert (
+            email["To"] == "testemail@example.com"
+        )  # This is the email that the FakeFileBackend returns
+        assert (
+            email["From"] == "foo@example.com"
+        )  # This is the email that the FakeFileBackend returns
 
     @pytest.mark.asyncio
     async def test_send_notification_with_render_error(self):
         notification = self.create_notification()
         context = self.create_notification_context()
 
-        backend = FakeAsyncIOFileBackend(database_file_name="fastapi-mail-adapter-test-notifications.json")
+        backend = FakeAsyncIOFileBackend(
+            database_file_name="fastapi-mail-adapter-test-notifications.json"
+        )
         backend.notifications.append(notification)
         await backend._store_notifications()
 
@@ -96,7 +108,7 @@ class FastAPIMailNotificationAdapterTestCase(IsolatedAsyncioTestCase):
             "vintasend.services.notification_template_renderers.stubs.fake_templated_email_renderer.FakeTemplateRendererWithException",
             "vintasend.services.notification_backends.stubs.fake_backend.FakeAsyncIOFileBackend",
             backend_kwargs={"database_file_name": "fastapi-mail-adapter-test-notifications.json"},
-            config=self.config
+            config=self.config,
         )
         with adapter.fm.record_messages() as outbox:
             with pytest.raises(NotificationTemplateRenderingError):
