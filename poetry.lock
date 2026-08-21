@@ -1415,21 +1415,19 @@ zstd = ["backports-zstd (>=1.0.0)"]
 
 [[package]]
 name = "vintasend"
-version = "2.0.0"
+version = "3.0.0"
 description = "A flexible package for implementing transactional notifications"
 optional = false
-python-versions = ">=3.10,<3.15"
+python-versions = "<3.15,>=3.10"
 groups = ["main"]
-files = []
-develop = true
+files = [
+    {file = "vintasend-3.0.0-py3-none-any.whl", hash = "sha256:5e8a9ce4473f7a744778533e0396aab73aeddc26221420ea9b613ae1b321f016"},
+    {file = "vintasend-3.0.0.tar.gz", hash = "sha256:e69b9e6c2b3e74d51a4334e1a7575ab119c099e01e0af20a5a4be7ce305f8b5d"},
+]
 
 [package.dependencies]
-requests = "^2.34.2"
+requests = ">=2.34.2,<3.0.0"
 typing-extensions = ">=4.10.0"
-
-[package.source]
-type = "directory"
-url = "../.."
 
 [[package]]
 name = "virtualenv"
@@ -1454,5 +1452,5 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 
 [metadata]
 lock-version = "2.1"
-python-versions = "<3.14,>=3.10"
-content-hash = "ff773b922b826b32c0d40faf8a832587c283ed8238c0b07350f3cabc3a3e5109"
+python-versions = "<3.15,>=3.10"
+content-hash = "a1921b0739fe97df2cc6d89774f61f2c9d6bba280499819e7d03aa8a89cd1cac"
