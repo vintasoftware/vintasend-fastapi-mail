@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Generic, TypeVar
 
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
+from pydantic import NameEmail
 from vintasend.app_settings import NotificationSettings
 from vintasend.constants import NotificationTypes
 from vintasend.services.dataclasses import Notification, OneOffNotification
@@ -42,8 +43,15 @@ class FastAPIMailNotificationAdapter(Generic[B, T], AsyncIOBaseNotificationAdapt
         """
         notification_settings = NotificationSettings()
 
-        to: list[str] = [await self._get_recipient_email(notification)]
-        bcc: list[str] = list(notification_settings.NOTIFICATION_DEFAULT_BCC_EMAILS)
+        # Given a bare address, fastapi-mail uses its local part as the display name
+        # ("user <user@example.com>"). Naming each address after itself keeps the header
+        # a bare address.
+        recipient = await self._get_recipient_email(notification)
+        to = [NameEmail(recipient, recipient)]
+        bcc = [
+            NameEmail(address, address)
+            for address in notification_settings.NOTIFICATION_DEFAULT_BCC_EMAILS
+        ]
 
         context_with_base_url: "NotificationContextDict" = context.copy()
         context_with_base_url["base_url"] = (
