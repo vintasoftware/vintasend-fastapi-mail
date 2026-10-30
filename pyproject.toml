@@ -13,7 +13,7 @@ include = [
 [tool.poetry.dependencies]
 python = "<3.15,>=3.10"
 vintasend = "3.5.0"
-fastapi-mail = "^1.4.2"
+fastapi-mail = "^1.6.6"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -22,9 +22,9 @@ tox = "^4.23.2"
 # Makes the [gh] section in tox.ini effective: each CI job then runs only the
 # envs mapped to its interpreter instead of every env it can find one for.
 tox-gh = "^1.8.0"
-pytest = "^8.3.3"
+pytest = "^9.2.0"
 pytest-xdist = {version = "^3.6.1", extras=["psutil"]}
-pytest-cov = "^6.0.0"
+pytest-cov = "^7.1.0"
 mypy = "^2.3.0"
 
 
